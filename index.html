@@ -41,6 +41,7 @@
         display: flex;
         flex-direction: column;
         padding: 15px;
+        min-width: 240px;
       }
 
       /* --- Resizer (Разделитель для изменения ширины) --- */
@@ -84,6 +85,7 @@
         text-align: center;
         transition: background-color 0.2s;
         font-size: 0.9rem;
+        min-width: 200px;
       }
       .btn:hover {
         background-color: var(--accent-hover);
@@ -101,7 +103,7 @@
       .select-actions {
         display: flex;
         gap: 10px;
-        margin-bottom: 15px;
+        margin-bottom: 14px;
       }
       .btn-small {
         flex: 1;
@@ -210,12 +212,25 @@
         min-width: 0; /* Чтобы правая панель не распирала контейнер */
       }
 
-      .toolbar {
+      .activity-bar {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: flex-end;
         margin-bottom: 15px;
+        gap: 15px;
+        background: var(--sidebar-bg);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 12px;
         gap: 15px;
         background: var(--sidebar-bg);
         padding: 15px;
@@ -226,7 +241,7 @@
       .options-group {
         display: flex;
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 45px;
         align-items: center;
       }
 
@@ -331,9 +346,10 @@
           <label class="option-label"> <input type="checkbox" id="optIncludePath" checked /> Include Path </label>
           <label class="option-label"> <input type="checkbox" id="optRemoveComments" /> Remove Comments </label>
           <label class="option-label"> <input type="checkbox" id="optMinify" /> Minify </label>
-          <label class="option-label"> <input type="checkbox" id="optAddSeparator" checked /> Add Separator </label>
+          <label class="option-label"> <input type="checkbox" id="optAddSeparator" /> Add Separator </label>
         </div>
-
+      </div>
+      <div class="activity-bar">
         <div class="actions-group">
           <button class="btn" id="combineBtn">🚀 Combine</button>
           <button class="btn" id="copyBtn" style="background-color: var(--border)">📋 Copy</button>
@@ -376,7 +392,6 @@
         if (!isResizing) return;
         // Ограничиваем минимальную и максимальную ширину левой панели
         let newWidth = e.clientX;
-        if (newWidth < 200) newWidth = 200; // Минимальная ширина 200px
         if (newWidth > document.body.clientWidth - 400) newWidth = document.body.clientWidth - 400; // Оставляем место для правой панели
 
         sidebar.style.width = `${newWidth}px`;
@@ -503,7 +518,7 @@
           }
 
           if (optIncludePath) {
-            combinedText += `// --- File: ${file.webkitRelativePath} ---\n`;
+            combinedText += `// ${file.webkitRelativePath}:\n`;
           }
 
           combinedText += text + '\n';
