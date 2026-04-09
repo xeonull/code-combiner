@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,6 +16,11 @@
         --border: #3e3e42;
         --btn-text: #ffffff;
         --folder-accent: #9e9e9e;
+        --icon-folder-open: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 48 48'%3E%3Cpath d='M8.5 8C6.019 8 4 10.019 4 12.5L4 35.5C4 35.917 4.075 36.312 4.182 36.695C4.223 36.543 4.264 36.391 4.32 36.242L5.539 33L6.615 30.133L9.336 22.891C10.21 20.563 12.467 19 14.953 19L42 19L42 17.5C42 15.019 39.981 13 37.5 13L24.043 13L19.572 9.273C18.586 8.451 17.336 8 16.053 8L8.5 8zM14.953 22C13.703 22 12.584 22.775 12.145 23.945L7.131 37.297C6.639 38.604 7.605 40 9.002 40L38.047 40C39.297 40 40.416 39.225 40.855 38.055L45.865 24.715C46.366 23.406 45.4 22 43.998 22L14.953 22z'/%3E%3C/svg%3E");
+        --icon-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 48 48'%3E%3Cpath d='M8.5 8C6.019 8 4 10.019 4 12.5L4 18L16.053 18C16.637 18 17.202 17.794 17.652 17.42L23.5 12.547L19.572 9.273C18.586 8.452 17.337 8 16.053 8L8.5 8zM27.645 13L19.572 19.725C18.585 20.547 17.337 21 16.053 21L4 21L4 35.5C4 37.981 6.019 40 8.5 40L39.5 40C41.981 40 44 37.981 44 35.5L44 17.5C44 15.019 41.981 13 39.5 13L27.645 13z'/%3E%3C/svg%3E");
+        --icon-file: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23C5C5C5' stroke-width='1.5' stroke-linejoin='round' d='M9.5 1.5H4.5C3.672 1.5 3 2.172 3 3v10c0 .828.672 1.5 1.5 1.5h7c.828 0 1.5-.672 1.5-1.5V5.5L9.5 1.5z'/%3E%3Cpath fill='none' stroke='%23C5C5C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M9.5 1.5V4.5c0 .552.448 1 1 1h2.5'/%3E%3C/svg%3E");
+        --icon-copy-file: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7.5 3H14.6C16.8402 3 17.9603 3 18.816 3.43597C19.5686 3.81947 20.1805 4.43139 20.564 5.18404C21 6.03969 21 7.15979 21 9.4V16.5M6.2 21H14.3C15.4201 21 15.9802 21 16.408 20.782C16.7843 20.5903 17.0903 20.2843 17.282 19.908C17.5 19.4802 17.5 18.9201 17.5 17.8V9.7C17.5 8.57989 17.5 8.01984 17.282 7.59202C17.0903 7.21569 16.7843 6.90973 16.408 6.71799C15.9802 6.5 15.4201 6.5 14.3 6.5H6.2C5.0799 6.5 4.51984 6.5 4.09202 6.71799C3.71569 6.90973 3.40973 7.21569 3.21799 7.59202C3 8.01984 3 8.57989 3 9.7V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.0799 21 6.2 21Z' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        --icon-play: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M852.727563 392.447107C956.997809 458.473635 956.941389 565.559517 852.727563 631.55032L281.888889 993.019655C177.618644 1059.046186 93.090909 1016.054114 93.090909 897.137364L93.090909 126.860063C93.090909 7.879206 177.675064-35.013033 281.888889 30.977769L852.727563 392.447107 852.727563 392.447107Z'/%3E%3C/svg%3E");
       }
 
       * {
@@ -62,7 +67,7 @@
       .header h1 {
         font-size: 1.2rem;
         color: var(--accent);
-        margin-bottom: 15px;
+        margin-bottom: 12px;
       }
 
       .file-input-wrapper {
@@ -74,7 +79,9 @@
       }
 
       .btn {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 8px 16px;
         background-color: var(--accent);
         color: var(--btn-text);
@@ -86,6 +93,7 @@
         transition: background-color 0.2s;
         font-size: 0.9rem;
         min-width: 200px;
+        gap: 6px; /* отступ между иконкой и текстом вместо margin */
       }
       .btn:hover {
         background-color: var(--accent-hover);
@@ -150,17 +158,8 @@
         display: none;
       }
 
-      .folder-icon::before {
-        content: '📁';
-        font-size: 0.9rem;
-        flex-shrink: 0;
-      }
-      details[open] > summary .folder-icon::before {
-        content: '📂';
-      }
-
       .file-item {
-        margin-left: 20px;
+        margin-left: 12px;
         padding: 4px 0;
         color: var(--text-muted);
         min-width: 0; /* Обязательно для Flexbox-обрезания */
@@ -197,11 +196,6 @@
         flex-shrink: 0;
       }
 
-      /* Специфично для иконки файла, чтобы не сжималась */
-      .file-icon {
-        flex-shrink: 0;
-      }
-
       /* --- Главная панель (Правая часть) --- */
       .main-content {
         flex-grow: 1;
@@ -233,7 +227,7 @@
         margin-bottom: 12px;
         gap: 15px;
         background: var(--sidebar-bg);
-        padding: 15px;
+        padding: 14px;
         border-radius: 6px;
         border: 1px solid var(--border);
       }
@@ -302,6 +296,49 @@
         overflow: auto;
       }
 
+      .icon-inline {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-color: white;
+        mask-image: var(--icon-folder);
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        -webkit-mask-image: var(--icon-folder);
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+      }
+
+      .folder-icon {
+        background-color: var(--text-main);
+        mask-image: var(--icon-folder-open);
+        -webkit-mask-image: var(--icon-folder);
+      }
+
+      details[open] > summary .folder-icon {
+        background-color: var(--text-main);
+        mask-image: var(--icon-folder-open);
+        -webkit-mask-image: var(--icon-folder-open);
+      }
+
+      .file-icon {
+        background-color: var(--text-main);
+        mask-image: var(--icon-file);
+        -webkit-mask-image: var(--icon-file);
+      }
+
+      .copy-file-icon {
+        background-color: var(--text-main);
+        mask-image: var(--icon-copy-file);
+        -webkit-mask-image: var(--icon-copy-file);
+      }
+
+      .play-icon {
+        background-color: var(--text-main);
+        mask-image: var(--icon-play);
+        -webkit-mask-image: var(--icon-play);
+      }
+
       ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -316,6 +353,77 @@
       ::-webkit-scrollbar-thumb:hover {
         background: var(--text-muted);
       }
+      /* Стили для кнопок expand/collapse */
+      .folder-actions {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+        padding-left: 8px;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      summary:hover .folder-actions {
+        opacity: 1;
+      }
+
+      .folder-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.2s;
+      }
+
+      .folder-action-btn:hover {
+        background-color: var(--border);
+        color: var(--text-main);
+      }
+
+      .expand-all-btn svg,
+      .collapse-all-btn svg {
+        pointer-events: none;
+      }
+
+      /* Стили для кнопок expand/collapse */
+      .folder-actions {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+        padding-left: 8px;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      summary:hover .folder-actions {
+        opacity: 1;
+      }
+
+      .folder-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.2s;
+      }
+
+      .folder-action-btn:hover {
+        background-color: var(--border);
+        color: var(--text-main);
+      }
+
+      .expand-all-btn svg,
+      .collapse-all-btn svg {
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -323,7 +431,10 @@
       <div class="header">
         <h1>🧩 Code Combiner</h1>
         <div class="file-input-wrapper">
-          <button class="btn" style="width: 100%">📁 Select Folder</button>
+          <button class="btn" style="width: 100%">
+            <span class="icon-inline"></span>
+            Select Folder
+          </button>
           <input type="file" id="folderInput" webkitdirectory directory multiple />
         </div>
       </div>
@@ -351,14 +462,15 @@
       </div>
       <div class="activity-bar">
         <div class="actions-group">
-          <button class="btn" id="combineBtn">🚀 Combine</button>
-          <button class="btn" id="copyBtn" style="background-color: var(--border)">📋 Copy</button>
+          <button class="btn" id="combineBtn">
+            <span class="icon-inline play-icon"></span>Combine</button>
+          <button class="btn" id="copyBtn" style="background-color: var(--border)"><span class="icon-inline copy-file-icon"></span>Copy</button>
         </div>
       </div>
 
       <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
-        <textarea id="outputArea" readonly placeholder="Your combined code will appear here..."></textarea>
+        <textarea id="outputArea" placeholder="Your combined code will appear here..."></textarea>
       </div>
     </div>
 
@@ -412,7 +524,7 @@
         if (files.length === 0) return;
 
         fileStorage = files;
-        const fileTree = buildTree(files);
+        const fileTree = sortTree(buildTree(files));
         treeContainer.innerHTML = '';
         treeContainer.appendChild(renderTree(fileTree, true));
       });
@@ -434,6 +546,31 @@
         return root;
       }
 
+      // Функция для сортировки дерева: сначала папки по алфавиту, потом файлы по алфавиту
+      function sortTree(node) {
+        const sortedNode = {};
+        const entries = Object.entries(node);
+
+        // Разделяем на папки и файлы
+        const folders = entries.filter(([key, value]) => !value.isFile);
+        const files = entries.filter(([key, value]) => value.isFile);
+
+        // Сортируем папки по имени
+        folders.sort((a, b) => a[0].localeCompare(b[0]));
+        // Сортируем файлы по имени
+        files.sort((a, b) => a[0].localeCompare(b[0]));
+
+        // Сначала добавляем папки, потом файлы
+        for (const [key, value] of folders) {
+          sortedNode[key] = sortTree(value); // Рекурсивно сортируем вложенные папки
+        }
+        for (const [key, value] of files) {
+          sortedNode[key] = value;
+        }
+
+        return sortedNode;
+      }
+
       function renderTree(node, isRoot = false) {
         const container = document.createElement('div');
 
@@ -443,8 +580,8 @@
             fileItem.className = 'file-item';
             fileItem.innerHTML = `
                         <label class="tree-label" title="${node[key].name}">
-                            <input type="checkbox" class="file-checkbox" value="${node[key].index}" checked>
-                            <span class="file-icon">📄</span>
+                            <input type="checkbox" class="file-checkbox" value="${node[key].index}" checked>                            
+                            <span class="icon-inline file-icon"></span>
                             <span class="truncate-text">${node[key].name}</span>
                         </label>
                     `;
@@ -456,9 +593,43 @@
             const summary = document.createElement('summary');
             summary.innerHTML = `
                         <input type="checkbox" class="folder-checkbox" checked title="Select/Deselect all files in folder">
-                        <span class="folder-icon"></span>
+                        <span class="icon-inline folder-icon"></span>
                         <span class="truncate-text" title="${key}">${key}</span>
+                        <span class="folder-actions">
+                          <span class="folder-action-btn expand-all-btn" title="Expand all">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M3 6h18"/>
+                              <path d="M7 12h10"/>
+                              <path d="M10 18h4"/>
+                            </svg>
+                          </span>
+                          <span class="folder-action-btn collapse-all-btn" title="Collapse all">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M5 12h14"/>
+                            </svg>
+                          </span>
+                        </span>
                     `;
+
+            // Добавляем обработчики для кнопок expand/collapse
+            const expandBtn = summary.querySelector('.expand-all-btn');
+            const collapseBtn = summary.querySelector('.collapse-all-btn');
+
+            expandBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const allDetails = details.querySelectorAll('details');
+              allDetails.forEach((d) => (d.open = true));
+              details.open = true;
+            });
+
+            collapseBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const allDetails = details.querySelectorAll('details');
+              allDetails.forEach((d) => (d.open = false));
+              // details.open = false;
+            });
 
             details.appendChild(summary);
             details.appendChild(renderTree(node[key]));
@@ -490,7 +661,8 @@
           return;
         }
 
-        combineBtn.textContent = '⏳ Processing...';
+        const originalContent = combineBtn.innerHTML
+        combineBtn.textContent = 'Processing...';
         combineBtn.style.opacity = '0.7';
 
         const optIncludePath = document.getElementById('optIncludePath').checked;
@@ -531,7 +703,7 @@
         outputArea.value = combinedText;
         updateLineNumbers();
 
-        combineBtn.textContent = '🚀 Combine';
+        combineBtn.innerHTML = originalContent
         combineBtn.style.opacity = '1';
       });
 
@@ -542,11 +714,11 @@
         }
 
         navigator.clipboard.writeText(outputArea.value).then(() => {
-          const originalText = copyBtn.textContent;
-          copyBtn.textContent = '✅ Copied';
+          const originalContent = copyBtn.innerHTML;
+          copyBtn.textContent = 'Copied';
           copyBtn.style.backgroundColor = 'var(--accent)';
           setTimeout(() => {
-            copyBtn.textContent = originalText;
+            copyBtn.innerHTML = originalContent;
             copyBtn.style.backgroundColor = 'var(--border)';
           }, 2000);
         });
