@@ -785,30 +785,37 @@
       });
 
       function updateLineNumbers() {
+        const savedScrollTop = outputArea.scrollTop;
         const linesCount = outputArea.value.split('\n').length;
         let numbersHtml = '';
         for (let i = 1; i <= linesCount; i++) {
           numbersHtml += `<div>${i}</div>`;
         }
         lineNumbersDiv.innerHTML = numbersHtml || '<div>1</div>';
+        // Восстанавливаем сразу, без ожидания следующего кадра
+        lineNumbersDiv.scrollTop = savedScrollTop;
       }
 
       // --- Синхронизация скролла номеров строк с textarea ---
-      // Когда в textarea появляется горизонтальный скроллбар, его clientHeight уменьшается.
-      // Чтобы line-numbers мог проскроллиться на ту же величину, добавляем padding-bottom,
-      // равный разнице максимальных значений scrollTop.
       function syncLineNumbersScroll() {
-        // Сбрасываем к базовому padding (15px из CSS)
-        lineNumbersDiv.style.paddingBottom = '';
+        const currentPaddingBottom = parseFloat(lineNumbersDiv.style.paddingBottom) || 15;
+        const extraPadding = Math.max(0, currentPaddingBottom - 15);
+
+        // Вычитаем "лишний" padding из текущего scrollHeight, получаем "базовый"
+        const baseLineNumbersScrollHeight = lineNumbersDiv.scrollHeight - extraPadding;
+        const lineNumbersMaxScroll = baseLineNumbersScrollHeight - lineNumbersDiv.clientHeight;
 
         const textareaMaxScroll = outputArea.scrollHeight - outputArea.clientHeight;
-        const lineNumbersMaxScroll = lineNumbersDiv.scrollHeight - lineNumbersDiv.clientHeight;
-
         const diff = textareaMaxScroll - lineNumbersMaxScroll;
 
-        if (diff > 0) {
-          lineNumbersDiv.style.paddingBottom = (15 + diff) + 'px';
+        const newPaddingBottom = 15 + Math.max(0, diff);
+
+        if (Math.abs(newPaddingBottom - currentPaddingBottom) > 0.5) {
+          lineNumbersDiv.style.paddingBottom = newPaddingBottom + 'px';
         }
+
+        // Принудительно выравниваем, даже если padding не изменился
+        lineNumbersDiv.scrollTop = outputArea.scrollTop;
       }
 
       outputArea.addEventListener('input', () => {
@@ -820,13 +827,10 @@
         lineNumbersDiv.scrollTop = outputArea.scrollTop;
       });
 
-      // Отслеживаем изменение размеров textarea (появление/исчезновение скроллбара)
       const resizeObserver = new ResizeObserver(() => {
         syncLineNumbersScroll();
       });
       resizeObserver.observe(outputArea);
-
-      window.addEventListener('resize', syncLineNumbersScroll);
 
       // Инициализация
       // syncLineNumbersScroll();
