@@ -250,6 +250,22 @@
       .option-label input {
         accent-color: var(--accent);
       }
+      .option-label input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .option-label:has(input:disabled) {
+        color: var(--text-muted);
+        cursor: not-allowed;
+      }
+
+      .options-separator {
+        color: var(--border);
+        font-size: 1.2rem;
+        line-height: 1;
+        margin: 0 5px;
+        user-select: none;
+      }
 
       .actions-group {
         display: flex;
@@ -342,54 +358,56 @@
       ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
+        cursor: default;
       }
       ::-webkit-scrollbar-track {
         background: var(--bg-color);
+        cursor: default;
       }
       ::-webkit-scrollbar-thumb {
         background: var(--border);
         border-radius: 5px;
+        cursor: default;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: var(--text-muted);
       }
-      /* Стили для кнопок expand/collapse */
-      .folder-actions {
-        display: flex;
-        gap: 4px;
-        margin-left: auto;
-        padding-left: 8px;
-        opacity: 0;
-        transition: opacity 0.2s;
+      ::-webkit-scrollbar-corner {
+        background: var(--bg-color);
+      }
+      /* Стрелка вверх */
+      ::-webkit-scrollbar-button:vertical:start:decrement {
+        display: block;
+        height: 14px;
+        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 1L0 7h8z'/%3E%3C/svg%3E") center no-repeat;
+        border-bottom: 1px solid var(--border);
+        cursor: default;
+      }
+      /* Стрелка вниз */
+      ::-webkit-scrollbar-button:vertical:end:increment {
+        display: block;
+        height: 14px;
+        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 7L0 1h8z'/%3E%3C/svg%3E") center no-repeat;
+        border-top: 1px solid var(--border);
+        cursor: default;
+      }
+      /* Стрелка влево */
+      ::-webkit-scrollbar-button:horizontal:start:decrement {
+        display: block;
+        width: 14px;
+        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M1 4l6-4v8z'/%3E%3C/svg%3E") center no-repeat;
+        border-right: 1px solid var(--border);
+        cursor: default;
+      }
+      /* Стрелка вправо */
+      ::-webkit-scrollbar-button:horizontal:end:increment {
+        display: block;
+        width: 14px;
+        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M7 4L1 0v8z'/%3E%3C/svg%3E") center no-repeat;
+        border-left: 1px solid var(--border);
+        cursor: default;
       }
 
-      summary:hover .folder-actions {
-        opacity: 1;
-      }
-
-      .folder-action-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 20px;
-        height: 20px;
-        border-radius: 3px;
-        cursor: pointer;
-        color: var(--text-muted);
-        transition: all 0.2s;
-      }
-
-      .folder-action-btn:hover {
-        background-color: var(--border);
-        color: var(--text-main);
-      }
-
-      .expand-all-btn svg,
-      .collapse-all-btn svg {
-        pointer-events: none;
-      }
-
-      /* Стили для кнопок expand/collapse */
       .folder-actions {
         display: flex;
         gap: 4px;
@@ -455,9 +473,12 @@
       <div class="toolbar">
         <div class="options-group">
           <label class="option-label"> <input type="checkbox" id="optIncludePath" checked /> Include Path </label>
+          <label class="option-label"> <input type="checkbox" id="optOnlyImports" /> Only Imports </label>
           <label class="option-label"> <input type="checkbox" id="optRemoveComments" /> Remove Comments </label>
           <label class="option-label"> <input type="checkbox" id="optMinify" /> Minify </label>
           <label class="option-label"> <input type="checkbox" id="optAddSeparator" /> Add Separator </label>
+          <span class="options-separator">|</span>
+          <label class="option-label"> <input type="checkbox" id="optOnlyPaths" /> Only Paths </label>
         </div>
       </div>
       <div class="activity-bar">
@@ -465,6 +486,7 @@
           <button class="btn" id="combineBtn">
             <span class="icon-inline play-icon"></span>Combine</button>
           <button class="btn" id="copyBtn" style="background-color: var(--border)"><span class="icon-inline copy-file-icon"></span>Copy</button>
+          <button class="btn" id="clearBtn" style="background-color: var(--border)">Clear</button>
         </div>
       </div>
 
@@ -481,7 +503,12 @@
       const combineBtn = document.getElementById('combineBtn');
       const outputArea = document.getElementById('outputArea');
       const copyBtn = document.getElementById('copyBtn');
+      const clearBtn = document.getElementById('clearBtn');
       const lineNumbersDiv = document.getElementById('lineNumbers');
+
+      // --- Элементы опций ---
+      const optOnlyPaths = document.getElementById('optOnlyPaths');
+      const optionsGroup = document.querySelector('.options-group');
 
       // --- Элементы ресайзера ---
       const resizer = document.getElementById('resizer');
@@ -516,6 +543,16 @@
           document.body.style.cursor = 'default';
           document.body.style.userSelect = 'auto';
         }
+      });
+
+      // --- Логика Only Paths (отключение других чекбоксов) ---
+      optOnlyPaths.addEventListener('change', () => {
+        const checkboxes = optionsGroup.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb) => {
+          if (cb !== optOnlyPaths) {
+            cb.disabled = optOnlyPaths.checked;
+          }
+        });
       });
 
       // --- Логика Файлов ---
@@ -628,7 +665,6 @@
               e.stopPropagation();
               const allDetails = details.querySelectorAll('details');
               allDetails.forEach((d) => (d.open = false));
-              // details.open = false;
             });
 
             details.appendChild(summary);
@@ -661,7 +697,7 @@
           return;
         }
 
-        const originalContent = combineBtn.innerHTML
+        const originalContent = combineBtn.innerHTML;
         combineBtn.textContent = 'Processing...';
         combineBtn.style.opacity = '0.7';
 
@@ -669,12 +705,29 @@
         const optRemoveComments = document.getElementById('optRemoveComments').checked;
         const optMinify = document.getElementById('optMinify').checked;
         const optAddSeparator = document.getElementById('optAddSeparator').checked;
+        const optOnlyImports = document.getElementById('optOnlyImports').checked;
+        const optOnlyPaths = document.getElementById('optOnlyPaths').checked;
 
         let combinedText = '';
 
         for (const cb of checkboxes) {
           const file = fileStorage[cb.value];
+
+          if (optOnlyPaths) {
+            combinedText += file.webkitRelativePath + '\n';
+            continue;
+          }
+
           let text = await file.text();
+
+          if (optOnlyImports) {
+            const lines = text.split('\n');
+            const filtered = lines.filter((line) => {
+              const trimmed = line.trimStart();
+              return trimmed.startsWith('import ') || line.includes('import(');
+            });
+            text = filtered.join('\n');
+          }
 
           if (optRemoveComments) {
             text = text.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -702,8 +755,9 @@
 
         outputArea.value = combinedText;
         updateLineNumbers();
+        syncLineNumbersScroll();
 
-        combineBtn.innerHTML = originalContent
+        combineBtn.innerHTML = originalContent;
         combineBtn.style.opacity = '1';
       });
 
@@ -724,6 +778,12 @@
         });
       });
 
+      clearBtn.addEventListener('click', () => {
+        outputArea.value = '';
+        updateLineNumbers();
+        // syncLineNumbersScroll();
+      });
+
       function updateLineNumbers() {
         const linesCount = outputArea.value.split('\n').length;
         let numbersHtml = '';
@@ -733,11 +793,43 @@
         lineNumbersDiv.innerHTML = numbersHtml || '<div>1</div>';
       }
 
-      outputArea.addEventListener('input', updateLineNumbers);
+      // --- Синхронизация скролла номеров строк с textarea ---
+      // Когда в textarea появляется горизонтальный скроллбар, его clientHeight уменьшается.
+      // Чтобы line-numbers мог проскроллиться на ту же величину, добавляем padding-bottom,
+      // равный разнице максимальных значений scrollTop.
+      function syncLineNumbersScroll() {
+        // Сбрасываем к базовому padding (15px из CSS)
+        lineNumbersDiv.style.paddingBottom = '';
+
+        const textareaMaxScroll = outputArea.scrollHeight - outputArea.clientHeight;
+        const lineNumbersMaxScroll = lineNumbersDiv.scrollHeight - lineNumbersDiv.clientHeight;
+
+        const diff = textareaMaxScroll - lineNumbersMaxScroll;
+
+        if (diff > 0) {
+          lineNumbersDiv.style.paddingBottom = (15 + diff) + 'px';
+        }
+      }
+
+      outputArea.addEventListener('input', () => {
+        updateLineNumbers();
+        syncLineNumbersScroll();
+      });
 
       outputArea.addEventListener('scroll', () => {
         lineNumbersDiv.scrollTop = outputArea.scrollTop;
       });
+
+      // Отслеживаем изменение размеров textarea (появление/исчезновение скроллбара)
+      const resizeObserver = new ResizeObserver(() => {
+        syncLineNumbersScroll();
+      });
+      resizeObserver.observe(outputArea);
+
+      window.addEventListener('resize', syncLineNumbersScroll);
+
+      // Инициализация
+      // syncLineNumbersScroll();
     </script>
   </body>
 </html>
