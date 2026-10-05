@@ -379,7 +379,9 @@
       ::-webkit-scrollbar-button:vertical:start:decrement {
         display: block;
         height: 14px;
-        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 1L0 7h8z'/%3E%3C/svg%3E") center no-repeat;
+        background: var(--bg-color)
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 1L0 7h8z'/%3E%3C/svg%3E")
+          center no-repeat;
         border-bottom: 1px solid var(--border);
         cursor: default;
       }
@@ -387,7 +389,9 @@
       ::-webkit-scrollbar-button:vertical:end:increment {
         display: block;
         height: 14px;
-        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 7L0 1h8z'/%3E%3C/svg%3E") center no-repeat;
+        background: var(--bg-color)
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 7L0 1h8z'/%3E%3C/svg%3E")
+          center no-repeat;
         border-top: 1px solid var(--border);
         cursor: default;
       }
@@ -395,7 +399,9 @@
       ::-webkit-scrollbar-button:horizontal:start:decrement {
         display: block;
         width: 14px;
-        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M1 4l6-4v8z'/%3E%3C/svg%3E") center no-repeat;
+        background: var(--bg-color)
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M1 4l6-4v8z'/%3E%3C/svg%3E")
+          center no-repeat;
         border-right: 1px solid var(--border);
         cursor: default;
       }
@@ -403,7 +409,9 @@
       ::-webkit-scrollbar-button:horizontal:end:increment {
         display: block;
         width: 14px;
-        background: var(--bg-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M7 4L1 0v8z'/%3E%3C/svg%3E") center no-repeat;
+        background: var(--bg-color)
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M7 4L1 0v8z'/%3E%3C/svg%3E")
+          center no-repeat;
         border-left: 1px solid var(--border);
         cursor: default;
       }
@@ -449,11 +457,11 @@
       <div class="header">
         <h1>🧩 Code Combiner</h1>
         <div class="file-input-wrapper">
-          <button class="btn" style="width: 100%">
+          <button class="btn" id="folderPickerBtn" style="width: 100%">
             <span class="icon-inline"></span>
             Select Folder
           </button>
-          <input type="file" id="folderInput" webkitdirectory directory multiple />
+          <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none" />
         </div>
       </div>
 
@@ -483,8 +491,7 @@
       </div>
       <div class="activity-bar">
         <div class="actions-group">
-          <button class="btn" id="combineBtn">
-            <span class="icon-inline play-icon"></span>Combine</button>
+          <button class="btn" id="combineBtn"><span class="icon-inline play-icon"></span>Combine</button>
           <button class="btn" id="copyBtn" style="background-color: var(--border)"><span class="icon-inline copy-file-icon"></span>Copy</button>
           <button class="btn" id="clearBtn" style="background-color: var(--border)">Clear</button>
         </div>
@@ -556,15 +563,63 @@
       });
 
       // --- Логика Файлов ---
+      const folderPickerBtn = document.getElementById('folderPickerBtn');
+
+      folderPickerBtn.addEventListener('click', async () => {
+        // Если браузер поддерживает File System Access API (Chrome, Edge)
+        // В таком случае не требуется перевыбор папки, если файлы были изменены
+        // Enable in Brave: brave://flags/#file-system-access-api
+        if ('showDirectoryPicker' in window) {
+          try {
+            const dirHandle = await window.showDirectoryPicker({ id: 'code-combiner-folder' });
+            const files = [];
+            await getFilesFromDir(dirHandle, dirHandle.name, files);
+            if (files.length === 0) return;
+
+            fileStorage = files;
+            renderTreeFromStorage();
+          } catch (error) {
+            if (error.name !== 'AbortError') {
+              console.error('Select folder error:', error);
+            }
+          }
+        } else {
+          // Для Firefox, Safari — вызываем стандартный выбор папки
+          folderInput.click();
+        }
+      });
+
+      // Обработчик для fallback-варианта через <input type="file">
       folderInput.addEventListener('change', (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
 
         fileStorage = files;
-        const fileTree = sortTree(buildTree(files));
+        renderTreeFromStorage();
+      });
+
+      // Вспомогательная функция отрисовки дерева
+      function renderTreeFromStorage() {
+        const fileTree = sortTree(buildTree(fileStorage));
         treeContainer.innerHTML = '';
         treeContainer.appendChild(renderTree(fileTree, true));
-      });
+      }
+
+      // Вспомогательная функция для обхода папок в showDirectoryPicker
+      async function getFilesFromDir(dirHandle, path, fileList) {
+        for await (const entry of dirHandle.values()) {
+          const currentPath = `${path}/${entry.name}`;
+          if (entry.kind === 'file') {
+            fileList.push({
+              name: entry.name,
+              webkitRelativePath: currentPath,
+              handle: entry,
+            });
+          } else if (entry.kind === 'directory') {
+            await getFilesFromDir(entry, currentPath, fileList);
+          }
+        }
+      }
 
       function buildTree(files) {
         const root = {};
@@ -709,6 +764,7 @@
         const optOnlyPaths = document.getElementById('optOnlyPaths').checked;
 
         let combinedText = '';
+        let hasAlerted = false;
 
         for (const cb of checkboxes) {
           const file = fileStorage[cb.value];
@@ -718,7 +774,25 @@
             continue;
           }
 
-          let text = await file.text();
+          let text = '';
+          try {
+            // Если мы используем File System Access API:
+            if (file.handle) {
+              const freshFile = await file.handle.getFile();
+              text = await freshFile.text();
+            } else {
+              text = await file.text();
+            }
+          } catch (error) {
+            console.error(`Read error '${file.name}'':`, error);
+            text = `\n/* ERROR: Failed to read '${file.name}'. */\n`;
+
+            // Показываем предупреждение только при первой ошибке
+            if (!hasAlerted) {
+              alert('Failed to read one or more files (possibly modified on disk).\n\nPlease reselect the folder to update the data.');
+              hasAlerted = true;
+            }
+          }
 
           if (optOnlyImports) {
             const lines = text.split('\n');
