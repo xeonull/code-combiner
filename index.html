@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -96,6 +96,22 @@
       }
       .btn:hover {
         background-color: var(--accent-hover);
+      }
+
+      .btn-flex {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .btn-secondary {
+        background-color: var(--border);
+      }
+      .btn-secondary:hover {
+        background-color: var(--text-muted);
+      }
+
+      .btn-copied {
+        background-color: var(--accent) !important;
       }
 
       .square-btn {
@@ -251,6 +267,13 @@
         background: var(--bg-color);
       }
 
+      .empty-state {
+        color: var(--text-muted);
+        text-align: center;
+        padding-top: 20px;
+        font-size: 0.9rem;
+      }
+
       details {
         margin-left: 12px;
         min-width: 0;
@@ -319,12 +342,11 @@
         min-width: 0; /* Чтобы правая панель не распирала контейнер */
       }
 
-      .activity-bar {
+      .panel-bar {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 15px;
         gap: 15px;
         background: var(--sidebar-bg);
         padding: 12px;
@@ -332,17 +354,12 @@
         border: 1px solid var(--border);
       }
 
-      .toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: flex-end;
+      .panel-bar.toolbar {
         margin-bottom: 12px;
-        gap: 15px;
-        background: var(--sidebar-bg);
-        padding: 14px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
+      }
+
+      .panel-bar.activity-bar {
+        margin-bottom: 15px;
       }
 
       .options-group {
@@ -429,43 +446,30 @@
         display: inline-block;
         width: 16px;
         height: 16px;
-        background-color: white;
+        background-color: currentColor;
         mask-image: var(--icon-folder);
         mask-size: contain;
         mask-repeat: no-repeat;
-        -webkit-mask-image: var(--icon-folder);
-        -webkit-mask-size: contain;
-        -webkit-mask-repeat: no-repeat;
       }
 
       .folder-icon {
-        background-color: var(--text-main);
-        mask-image: var(--icon-folder-open);
-        -webkit-mask-image: var(--icon-folder);
+        mask-image: var(--icon-folder);
       }
 
       details[open] > summary .folder-icon {
-        background-color: var(--text-main);
         mask-image: var(--icon-folder-open);
-        -webkit-mask-image: var(--icon-folder-open);
       }
 
       .file-icon {
-        background-color: var(--text-main);
         mask-image: var(--icon-file);
-        -webkit-mask-image: var(--icon-file);
       }
 
       .copy-file-icon {
-        background-color: var(--text-main);
         mask-image: var(--icon-copy-file);
-        -webkit-mask-image: var(--icon-copy-file);
       }
 
       .play-icon {
-        background-color: var(--text-main);
         mask-image: var(--icon-play);
-        -webkit-mask-image: var(--icon-play);
       }
 
       ::-webkit-scrollbar {
@@ -488,45 +492,8 @@
       ::-webkit-scrollbar-corner {
         background: var(--bg-color);
       }
-      /* Стрелка вверх */
-      ::-webkit-scrollbar-button:vertical:start:decrement {
-        display: block;
-        height: 14px;
-        background: var(--bg-color)
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 1L0 7h8z'/%3E%3C/svg%3E")
-          center no-repeat;
-        border-bottom: 1px solid var(--border);
-        cursor: default;
-      }
-      /* Стрелка вниз */
-      ::-webkit-scrollbar-button:vertical:end:increment {
-        display: block;
-        height: 14px;
-        background: var(--bg-color)
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M4 7L0 1h8z'/%3E%3C/svg%3E")
-          center no-repeat;
-        border-top: 1px solid var(--border);
-        cursor: default;
-      }
-      /* Стрелка влево */
-      ::-webkit-scrollbar-button:horizontal:start:decrement {
-        display: block;
-        width: 14px;
-        background: var(--bg-color)
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M1 4l6-4v8z'/%3E%3C/svg%3E")
-          center no-repeat;
-        border-right: 1px solid var(--border);
-        cursor: default;
-      }
-      /* Стрелка вправо */
-      ::-webkit-scrollbar-button:horizontal:end:increment {
-        display: block;
-        width: 14px;
-        background: var(--bg-color)
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23858585' d='M7 4L1 0v8z'/%3E%3C/svg%3E")
-          center no-repeat;
-        border-left: 1px solid var(--border);
-        cursor: default;
+      ::-webkit-scrollbar-button {
+        display: none;
       }
 
       .folder-actions {
@@ -570,7 +537,7 @@
       <div class="header">
         <h1>🧩 Code Combiner</h1>
         <div class="folder-picker-group" id="folderPickerGroup">
-          <button class="btn" id="folderPickerBtn" style="flex: 1; min-width: 0;">
+          <button class="btn btn-flex" id="folderPickerBtn">
             <span class="icon-inline"></span>
             Select Folder
           </button>
@@ -579,8 +546,8 @@
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
-          <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none" />
-          <div id="recentFoldersDropdown" class="recent-dropdown" style="display: none;"></div>
+          <input type="file" id="folderInput" webkitdirectory multiple style="display: none" />
+          <div id="recentFoldersDropdown" class="recent-dropdown" style="display: none"></div>
         </div>
       </div>
 
@@ -590,29 +557,29 @@
       </div>
 
       <div class="tree-container" id="treeContainer">
-        <div style="color: var(--text-muted); text-align: center; padding-top: 20px; font-size: 0.9rem">Select a folder to view files</div>
+        <div class="empty-state">Select a folder to view files</div>
       </div>
     </div>
 
     <div class="resizer" id="resizer"></div>
 
     <div class="main-content">
-      <div class="toolbar">
+      <div class="panel-bar toolbar">
         <div class="options-group">
           <label class="option-label"> <input type="checkbox" id="optIncludePath" checked /> Include Path </label>
           <label class="option-label"> <input type="checkbox" id="optOnlyImports" /> Only Imports </label>
-          <label class="option-label"> <input type="checkbox" id="optRemoveComments" /> Remove Comments </label>
+          <label class="option-label" title="Warning: May incorrectly remove URLs inside strings"> <input type="checkbox" id="optRemoveComments" /> Remove Comments </label>
           <label class="option-label"> <input type="checkbox" id="optMinify" /> Minify </label>
           <label class="option-label"> <input type="checkbox" id="optAddSeparator" /> Add Separator </label>
           <span class="options-separator">|</span>
           <label class="option-label"> <input type="checkbox" id="optOnlyPaths" /> Only Paths </label>
         </div>
       </div>
-      <div class="activity-bar">
+      <div class="panel-bar activity-bar">
         <div class="actions-group">
           <button class="btn" id="combineBtn"><span class="icon-inline play-icon"></span>Combine</button>
-          <button class="btn" id="copyBtn" style="background-color: var(--border)"><span class="icon-inline copy-file-icon"></span>Copy</button>
-          <button class="btn" id="clearBtn" style="background-color: var(--border)">Clear</button>
+          <button class="btn btn-secondary" id="copyBtn"><span class="icon-inline copy-file-icon"></span>Copy</button>
+          <button class="btn btn-secondary" id="clearBtn">Clear</button>
         </div>
       </div>
 
@@ -666,16 +633,7 @@
             const tx = db.transaction('handles', 'readonly');
             const req = tx.objectStore('handles').get('__recent_list__');
             req.onsuccess = () => {
-              let res = req.result || [];
-              res = res.map(item => {
-                if (typeof item === 'string') {
-                  return { id: item, name: item, displayName: item };
-                } else if (item && !item.id) {
-                  return { id: item.key || item.path, name: item.key || item.path, displayName: item.path || item.key };
-                }
-                return item;
-              });
-              resolve(res);
+              resolve(req.result || []);
             };
             req.onerror = () => reject(req.error);
           });
@@ -702,7 +660,7 @@
       async function addRecentFolder(folderName, handle) {
         let list = await getRecentFoldersFromDB();
         const folderId = 'folder_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-        
+
         list.unshift({ id: folderId, name: folderName, displayName: folderName });
         if (list.length > 5) {
           const removed = list.pop();
@@ -715,7 +673,7 @@
           }
         }
         await saveRecentFoldersToDB(list);
-        
+
         if (handle) {
           try {
             const db = await dbPromise;
@@ -730,7 +688,7 @@
 
       async function updateFolderDisplayName(id, newDisplayName) {
         let list = await getRecentFoldersFromDB();
-        const item = list.find(i => i.id === id);
+        const item = list.find((i) => i.id === id);
         if (item) {
           item.displayName = newDisplayName.trim() || item.name;
           await saveRecentFoldersToDB(list);
@@ -740,7 +698,7 @@
 
       async function removeRecentFolder(id) {
         let list = await getRecentFoldersFromDB();
-        list = list.filter(item => item.id !== id);
+        list = list.filter((item) => item.id !== id);
         await saveRecentFoldersToDB(list);
         try {
           const db = await dbPromise;
@@ -773,11 +731,11 @@
         if (!isVisible) {
           await renderRecentDropdown();
           if (recentFoldersDropdown.children.length === 0) return;
-          
+
           const btnRect = recentFoldersBtn.getBoundingClientRect();
           const groupRect = folderPickerGroup.getBoundingClientRect();
           const leftOffset = btnRect.left - groupRect.left;
-          
+
           recentFoldersDropdown.style.left = leftOffset + 'px';
           recentFoldersDropdown.style.right = '';
           recentFoldersDropdown.style.display = 'block';
@@ -794,6 +752,71 @@
         e.stopPropagation();
       });
 
+      // --- Делегирование событий для выпадающего списка ---
+      async function startRename(folderId, renameBtn) {
+        const item = renameBtn.closest('.recent-item');
+        const textDiv = item.querySelector('.recent-item-text');
+        const currentName = textDiv.textContent;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'recent-rename-input';
+        input.value = currentName;
+
+        textDiv.innerHTML = '';
+        textDiv.appendChild(input);
+        input.focus();
+        input.select();
+
+        const saveRename = async () => {
+          const val = input.value.trim();
+          if (val) {
+            await updateFolderDisplayName(folderId, val);
+          } else {
+            await renderRecentDropdown();
+          }
+        };
+
+        input.addEventListener('blur', saveRename);
+        input.addEventListener('keydown', (ke) => {
+          if (ke.key === 'Enter') {
+            input.removeEventListener('blur', saveRename);
+            saveRename();
+          } else if (ke.key === 'Escape') {
+            input.removeEventListener('blur', saveRename);
+            renderRecentDropdown();
+          }
+          ke.stopPropagation();
+        });
+        input.addEventListener('click', (ce) => ce.stopPropagation());
+      }
+
+      recentFoldersDropdown.addEventListener('click', async (e) => {
+        const actionBtn = e.target.closest('[data-action]');
+        if (actionBtn) {
+          const action = actionBtn.dataset.action;
+          const folderId = actionBtn.dataset.folderId;
+
+          if (action === 'delete') {
+            await removeRecentFolder(folderId);
+            await renderRecentDropdown();
+            const currentList = await getRecentFoldersFromDB();
+            if (currentList.length === 0) {
+              recentFoldersDropdown.style.display = 'none';
+            }
+          } else if (action === 'rename') {
+            startRename(folderId, actionBtn);
+          }
+          return;
+        }
+
+        const item = e.target.closest('.recent-item');
+        if (item && item.dataset.folderId) {
+          recentFoldersDropdown.style.display = 'none';
+          await openRecentFolder(item.dataset.folderId);
+        }
+      });
+
       async function renderRecentDropdown() {
         const recent = await getRecentFoldersFromDB();
         recentFoldersDropdown.innerHTML = '';
@@ -807,16 +830,17 @@
         headerDiv.className = 'recent-header';
         headerDiv.textContent = 'Recent Folders';
         recentFoldersDropdown.appendChild(headerDiv);
-        
-        recent.forEach(itemData => {
+
+        recent.forEach((itemData) => {
           const id = itemData.id;
           const displayName = itemData.displayName || itemData.name;
           const originalName = itemData.name;
 
           const item = document.createElement('div');
           item.className = 'recent-item';
-          item.title = originalName; // Только исходное название в тултипе
-          
+          item.dataset.folderId = id;
+          item.title = originalName;
+
           const textDiv = document.createElement('div');
           textDiv.className = 'recent-item-text';
           textDiv.textContent = displayName;
@@ -828,6 +852,8 @@
           const renameBtn = document.createElement('button');
           renameBtn.className = 'recent-action-btn';
           renameBtn.title = 'Rename display name';
+          renameBtn.dataset.action = 'rename';
+          renameBtn.dataset.folderId = id;
           renameBtn.innerHTML = `
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -835,44 +861,11 @@
             </svg>
           `;
 
-          renameBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'recent-rename-input';
-            input.value = displayName;
-
-            textDiv.innerHTML = '';
-            textDiv.appendChild(input);
-            input.focus();
-            input.select();
-
-            const saveRename = async () => {
-              const val = input.value.trim();
-              if (val) {
-                await updateFolderDisplayName(id, val);
-              } else {
-                await renderRecentDropdown();
-              }
-            };
-
-            input.addEventListener('blur', saveRename);
-            input.addEventListener('keydown', (ke) => {
-              if (ke.key === 'Enter') {
-                input.removeEventListener('blur', saveRename);
-                saveRename();
-              } else if (ke.key === 'Escape') {
-                input.removeEventListener('blur', saveRename);
-                renderRecentDropdown();
-              }
-              ke.stopPropagation();
-            });
-            input.addEventListener('click', (ce) => ce.stopPropagation());
-          });
-          
           const deleteBtn = document.createElement('button');
           deleteBtn.className = 'recent-action-btn';
           deleteBtn.title = 'Remove from history';
+          deleteBtn.dataset.action = 'delete';
+          deleteBtn.dataset.folderId = id;
           deleteBtn.innerHTML = `
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -880,23 +873,8 @@
             </svg>
           `;
 
-          deleteBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await removeRecentFolder(id);
-            await renderRecentDropdown();
-            const currentList = await getRecentFoldersFromDB();
-            if (currentList.length === 0) {
-              recentFoldersDropdown.style.display = 'none';
-            }
-          });
-
           actionsDiv.appendChild(renameBtn);
           actionsDiv.appendChild(deleteBtn);
-
-          item.addEventListener('click', async () => {
-            recentFoldersDropdown.style.display = 'none';
-            await openRecentFolder(id);
-          });
 
           item.appendChild(textDiv);
           item.appendChild(actionsDiv);
@@ -1082,57 +1060,40 @@
           if (node[key].isFile) {
             const fileItem = document.createElement('div');
             fileItem.className = 'file-item';
+            const safeName = escapeHtml(node[key].name);
             fileItem.innerHTML = `
-                        <label class="tree-label" title="${node[key].name}">
-                            <input type="checkbox" class="file-checkbox" value="${node[key].index}" checked>                            
-                            <span class="icon-inline file-icon"></span>
-                            <span class="truncate-text">${node[key].name}</span>
-                        </label>
-                    `;
+              <label class="tree-label" title="${safeName}">
+                <input type="checkbox" class="file-checkbox" value="${node[key].index}" checked>                            
+                <span class="icon-inline file-icon"></span>
+                <span class="truncate-text">${safeName}</span>
+              </label>
+            `;
             container.appendChild(fileItem);
           } else {
             const details = document.createElement('details');
             details.open = isRoot;
 
+            const safeKey = escapeHtml(key);
             const summary = document.createElement('summary');
             summary.innerHTML = `
-                        <input type="checkbox" class="folder-checkbox" checked title="Select/Deselect all files in folder">
-                        <span class="icon-inline folder-icon"></span>
-                        <span class="truncate-text" title="${key}">${key}</span>
-                        <span class="folder-actions">
-                          <span class="folder-action-btn expand-all-btn" title="Expand all">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <path d="M3 6h18"/>
-                              <path d="M7 12h10"/>
-                              <path d="M10 18h4"/>
-                            </svg>
-                          </span>
-                          <span class="folder-action-btn collapse-all-btn" title="Collapse all">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <path d="M5 12h14"/>
-                            </svg>
-                          </span>
-                        </span>
-                    `;
-
-            // Добавляем обработчики для кнопок expand/collapse
-            const expandBtn = summary.querySelector('.expand-all-btn');
-            const collapseBtn = summary.querySelector('.collapse-all-btn');
-
-            expandBtn.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const allDetails = details.querySelectorAll('details');
-              allDetails.forEach((d) => (d.open = true));
-              details.open = true;
-            });
-
-            collapseBtn.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const allDetails = details.querySelectorAll('details');
-              allDetails.forEach((d) => (d.open = false));
-            });
+              <input type="checkbox" class="folder-checkbox" checked title="Select/Deselect all files in folder">
+              <span class="icon-inline folder-icon"></span>
+              <span class="truncate-text" title="${safeKey}">${safeKey}</span>
+              <span class="folder-actions">
+                <span class="folder-action-btn expand-all-btn" title="Expand all">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/>
+                    <path d="M7 12h10"/>
+                    <path d="M10 18h4"/>
+                  </svg>
+                </span>
+                <span class="folder-action-btn collapse-all-btn" title="Collapse all">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                  </svg>
+                </span>
+              </span>
+            `;
 
             details.appendChild(summary);
             details.appendChild(renderTree(node[key]));
@@ -1142,12 +1103,109 @@
         return container;
       }
 
+      // Функция для корректного извлечения однострочных и многострочных импортов / import(...)
+      function extractImports(text) {
+        const lines = text.split('\n');
+        const resultLines = [];
+        let buffer = [];
+        let parenDepth = 0;
+        let braceDepth = 0;
+        let bracketDepth = 0;
+        let capturing = false;
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const trimmed = line.trim();
+
+          if (!capturing) {
+            if (/^\s*import\b/.test(line) || line.includes('import(')) {
+              capturing = true;
+              buffer = [line];
+              for (const char of line) {
+                if (char === '(') parenDepth++;
+                else if (char === ')') parenDepth--;
+                else if (char === '{') braceDepth++;
+                else if (char === '}') braceDepth--;
+                else if (char === '[') bracketDepth++;
+                else if (char === ']') bracketDepth--;
+              }
+
+              // Если импорт уместился на одной строке и сразу закрыт
+              if ((trimmed.endsWith(';') || (parenDepth === 0 && braceDepth === 0 && bracketDepth === 0)) && !trimmed.endsWith(',')) {
+                resultLines.push(buffer.join('\n'));
+                capturing = false;
+                buffer = [];
+                parenDepth = 0;
+                braceDepth = 0;
+                bracketDepth = 0;
+              }
+            }
+          } else {
+            buffer.push(line);
+            for (const char of line) {
+              if (char === '(') parenDepth++;
+              else if (char === ')') parenDepth--;
+              else if (char === '{') braceDepth++;
+              else if (char === '}') braceDepth--;
+              else if (char === '[') bracketDepth++;
+              else if (char === ']') bracketDepth--;
+            }
+
+            // Когда скобки сбалансированы и строка завершается точкой с запятой, запятой или закрывающей скобкой
+            if (parenDepth <= 0 && braceDepth <= 0 && bracketDepth <= 0) {
+              if (trimmed.endsWith(';') || trimmed.endsWith(',') || trimmed.endsWith(')')) {
+                resultLines.push(buffer.join('\n'));
+                capturing = false;
+                buffer = [];
+                parenDepth = 0;
+                braceDepth = 0;
+                bracketDepth = 0;
+              }
+            }
+          }
+        }
+
+        // Подстраховка для незакрытых блоков в конце файла
+        if (capturing && buffer.length > 0) {
+          resultLines.push(buffer.join('\n'));
+        }
+
+        return resultLines.join('\n');
+      }
+
+      // --- Делегирование событий для дерева файлов ---
       treeContainer.addEventListener('change', (e) => {
         if (e.target.classList.contains('folder-checkbox')) {
           const details = e.target.closest('details');
           if (details) {
             const checkboxes = details.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach((cb) => (cb.checked = e.target.checked));
+          }
+        }
+      });
+
+      treeContainer.addEventListener('click', (e) => {
+        const expandBtn = e.target.closest('.expand-all-btn');
+        if (expandBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const details = expandBtn.closest('details');
+          if (details) {
+            const allDetails = details.querySelectorAll('details');
+            allDetails.forEach((d) => (d.open = true));
+            details.open = true;
+          }
+          return;
+        }
+
+        const collapseBtn = e.target.closest('.collapse-all-btn');
+        if (collapseBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const details = collapseBtn.closest('details');
+          if (details) {
+            const allDetails = details.querySelectorAll('details');
+            allDetails.forEach((d) => (d.open = false));
           }
         }
       });
@@ -1207,15 +1265,14 @@
           }
 
           if (optOnlyImports) {
-            const lines = text.split('\n');
-            const filtered = lines.filter((line) => {
-              const trimmed = line.trimStart();
-              return trimmed.startsWith('import ') || line.includes('import(');
-            });
-            text = filtered.join('\n');
+            text = extractImports(text);
           }
 
           if (optRemoveComments) {
+            const urlPattern = /"[^"]*:\/\/[^"]*"|'[^']*:\/\/[^']*'/g;
+            if (urlPattern.test(text)) {
+              console.warn(`Warning: File ${file.name} contains URLs that might be incorrectly modified by comment removal.`);
+            }
             text = text.replace(/\/\*[\s\S]*?\*\//g, '');
             text = text.replace(/\/\/.*$/gm, '');
           }
@@ -1256,10 +1313,10 @@
         navigator.clipboard.writeText(outputArea.value).then(() => {
           const originalContent = copyBtn.innerHTML;
           copyBtn.textContent = 'Copied';
-          copyBtn.style.backgroundColor = 'var(--accent)';
+          copyBtn.classList.add('btn-copied');
           setTimeout(() => {
             copyBtn.innerHTML = originalContent;
-            copyBtn.style.backgroundColor = 'var(--border)';
+            copyBtn.classList.remove('btn-copied');
           }, 2000);
         });
       });
@@ -1270,8 +1327,16 @@
       });
 
       function updateLineNumbers() {
-        const savedScrollTop = outputArea.scrollTop;
         const linesCount = outputArea.value.split('\n').length;
+
+        // Отключаем нумерацию для очень больших файлов для производительности
+        if (linesCount > 5000) {
+          lineNumbersDiv.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">Too many lines</div>';
+          lineNumbersDiv.style.paddingBottom = '15px';
+          return;
+        }
+
+        const savedScrollTop = outputArea.scrollTop;
         let numbersHtml = '';
         for (let i = 1; i <= linesCount; i++) {
           numbersHtml += `<div>${i}</div>`;
@@ -1303,10 +1368,24 @@
         lineNumbersDiv.scrollTop = outputArea.scrollTop;
       }
 
-      outputArea.addEventListener('input', () => {
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      const debouncedUpdateLineNumbers = debounce(() => {
         updateLineNumbers();
         syncLineNumbersScroll();
-      });
+      }, 150);
+
+      outputArea.addEventListener('input', debouncedUpdateLineNumbers);
 
       outputArea.addEventListener('scroll', () => {
         lineNumbersDiv.scrollTop = outputArea.scrollTop;
